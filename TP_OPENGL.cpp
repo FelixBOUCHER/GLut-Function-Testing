@@ -1,4 +1,4 @@
-#include <math.h>
+﻿#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -30,46 +30,6 @@ GLvoid window_key(unsigned char key, int x, int y);
 void SphereClavier(int key, int x, int y);
 void DisplayVoxel(Point centre, double length);
 
-void drawCurve(Point* tabPointsOfCurve, long nbPoints);
-void drawGrille(Point* grille, long nbU, long nbV);
-Point* hermiteCubicCurve(const Point& p0,
-                         const Point& p1,
-                         const Vector& v0,
-                         const Vector& v1,
-                         long nbU);
-Point* bezierCurveByBernstein(Point* tabControlPoint,
-                              long nbControlPoint,
-                              long nbU);
-Point* BezierCurveByCasteljau(Point* tabControlPoint,
-                              long nbControlPoint,
-                              long nbU);
-Point calculRecCasteljau(Point* tabControlPoint, long nbControlPoint, double u);
-double bernstein(int i, int n, double u);
-int polyNewton(int n, int i);
-int f(int n);
-
-Point** surfaceCylindrique(Point* courbeBezier,
-                           Point* droite,
-                           long nBezier,
-                           long nbPointCourbe,
-                           long nbPointU,
-                           long nbPointV);
-Point** surfaceReglee(Point* ptControlCourbeBezier1,
-                      Point* ptControlCourbeBezier2,
-                      long nbControlPoint1,
-                      long nbControlPoint2,
-                      long nbPointU,
-                      long nbPointV);
-Point* BezierSurfaceByCasteljau(Point** grilleControlPoint,
-                                long nbControlePointU,
-                                long nbU,
-                                long nbControlePointV,
-                                long nbV);
-Point calculRecSurfaceCasteljau(Point** grilleControlPoint,
-                                long nbControlePointU,
-                                long nbControlePointV,
-                                double u,
-                                double v);
 long nbMeridienParallele = 8;
 
 void drawCylindre(Point** cylindre, long nbMeridien);
@@ -80,12 +40,6 @@ void drawSphere(Point** Sphere, long nbMeridienParallele);
 Point** facet_Sphere(long rayon);
 void displayVoxel(Point centre, double length);
 void StdDisplayVoxel(Point* tab);
-Point ** createVoxel(Point* Tab, Point centre, double rayon);
-void CreateSpherebyVoxel(Point centre, double length, double resolution);
-void GenerateSphere(Point* TabVoxel, Point centre, double length, double resolution,  double currentR);
-double Distance(Point A, Point B);
-void GenerateCylinder(Point* TabVoxel, Point centre, Vector hauteur, double length, double resolution, double currentR);
-void CreateCylinderbyVoxel(Point centre, Vector hauteur, double length, double resolution);
 
 int main(int argc, char** argv) {
 
@@ -419,6 +373,268 @@ void drawCylindre(Point** cylindre, long nbMeridien) {
                CercleHaut[i].getZ());
     glVertex3f(CercleBas[i].getX(), CercleBas[i].getY(), CercleBas[i].getZ());
     glEnd();
+  }
+}
+
+void StdDisplayVoxel(Point* tab)
+{
+  glBegin(GL_POINTS);
+  for (int i = 0; i < 8; ++i)
+  {
+    glVertex3d(tab[i].getX(), tab[i].getY(), tab[i].getZ());
+  }
+  glEnd();
+
+  /*glColor3f(1,0,1);
+    glBegin(GL_QUADS);
+        glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+        glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+        glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+        glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+  
+        glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+        glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+        glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+        glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+   
+        glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+        glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+        glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+        glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+  
+        glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+        glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+        glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+        glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+   
+        glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+        glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+        glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+        glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+   
+        glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+        glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+        glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+        glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+    glEnd();*/
+
+  glBegin(GL_LINES);
+    glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+    glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+
+    glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+    glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+
+    glVertex3d(tab[0].getX(), tab[0].getY(), tab[0].getZ());
+    glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+
+    glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+    glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+
+    glVertex3d(tab[1].getX(), tab[1].getY(), tab[1].getZ());
+    glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+
+    glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+    glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+
+    glVertex3d(tab[2].getX(), tab[2].getY(), tab[2].getZ());
+    glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+
+    glVertex3d(tab[3].getX(), tab[3].getY(), tab[3].getZ());
+    glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+
+    glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+    glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+
+    glVertex3d(tab[4].getX(), tab[4].getY(), tab[4].getZ());
+    glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+
+    glVertex3d(tab[5].getX(), tab[5].getY(), tab[5].getZ());
+    glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+
+    glVertex3d(tab[6].getX(), tab[6].getY(), tab[6].getZ());
+    glVertex3d(tab[7].getX(), tab[7].getY(), tab[7].getZ());
+      glEnd();
+
+}
+
+Point ** createVoxel(Point* Tab, Point centre, double rayon)
+{
+  Point ** TabVox = new Point*[9];
+  for (int i = 0; i < 9; ++i)
+  {
+    TabVox[i] = new Point[9];
+  }
+
+  Point milieu(centre.getX(), centre.getY(), centre.getZ());
+  Point Sommet0(Tab[0].getX(),Tab[0].getY(), Tab[0].getZ());
+  Point Sommet1(Tab[1].getX(),Tab[1].getY(), Tab[1].getZ());
+  Point Sommet2(Tab[2].getX(),Tab[2].getY(), Tab[2].getZ());
+  Point Sommet3(Tab[3].getX(),Tab[3].getY(), Tab[3].getZ());
+  Point Sommet4(Tab[4].getX(),Tab[4].getY(), Tab[4].getZ());
+  Point Sommet5(Tab[5].getX(),Tab[5].getY(), Tab[5].getZ());
+  Point Sommet6(Tab[6].getX(),Tab[6].getY(), Tab[6].getZ());
+  Point Sommet7(Tab[7].getX(),Tab[7].getY(), Tab[7].getZ());
+
+  Point Arete01(Tab[0].getX(), Tab[0].getY() + rayon, Tab[0].getZ());
+  Point Arete02(Tab[0].getX() + rayon, Tab[0].getY(), Tab[0].getZ());
+  Point Arete04(Tab[0].getX(), Tab[0].getY(), Tab[0].getZ() - rayon);
+  Point Arete13(Tab[1].getX() + rayon, Tab[1].getY(), Tab[1].getZ());
+  Point Arete15(Tab[1].getX(), Tab[1].getY(), Tab[1].getZ() - rayon);
+  Point Arete23(Tab[2].getX(), Tab[2].getY() + rayon, Tab[2].getZ());
+  Point Arete26(Tab[2].getX(), Tab[2].getY(), Tab[2].getZ() - rayon);
+  Point Arete37(Tab[3].getX(), Tab[3].getY(), Tab[3].getZ() - rayon);
+  Point Arete45(Tab[4].getX(), Tab[4].getY() + rayon, Tab[4].getZ());
+  Point Arete46(Tab[4].getX() + rayon, Tab[4].getY(), Tab[4].getZ());
+  Point Arete57(Tab[5].getX() + rayon, Tab[5].getY(), Tab[5].getZ());
+  Point Arete67(Tab[6].getX(), Tab[6].getY() + rayon, Tab[6].getZ());
+
+  Point Face0132(centre.getX(), centre.getY(), centre.getZ() + rayon);
+  Point Face1375(centre.getX(), centre.getY() + rayon, centre.getZ());
+  Point Face2376(centre.getX() + rayon, centre.getY(), centre.getZ());
+  Point Face0154(centre.getX() - rayon, centre.getY(), centre.getZ());
+  Point Face4576(centre.getX(), centre.getY(), centre.getZ() - rayon);
+  Point Face0264(centre.getX(), centre.getY() - rayon, centre.getZ());
+
+
+TabVox[0][0] = Sommet0;
+TabVox[0][1] = Arete01;
+TabVox[0][2] = Arete02;
+TabVox[0][3] = Face0132;
+TabVox[0][4] = Arete04;
+TabVox[0][5] = Face0154;
+TabVox[0][6] = Face0264;
+TabVox[0][7] = milieu;
+
+TabVox[1][0] = Arete01;
+TabVox[1][1] = Sommet1;
+TabVox[1][2] = Face0132;
+TabVox[1][3] = Arete13;
+TabVox[1][4] = Face0154;
+TabVox[1][5] = Arete15;
+TabVox[1][6] = milieu;
+TabVox[1][7] = Face1375;
+
+TabVox[2][0] = Arete02;
+TabVox[2][1] = Face0132;
+TabVox[2][2] = Sommet2;
+TabVox[2][3] = Arete23;
+TabVox[2][4] = Face0264;
+TabVox[2][5] = milieu;
+TabVox[2][6] = Arete26;
+TabVox[2][7] = Face2376;
+
+TabVox[3][0] = Face0132;
+TabVox[3][1] = Arete13;
+TabVox[3][2] = Arete23;
+TabVox[3][3] = Sommet3;
+TabVox[3][4] = milieu;
+TabVox[3][5] = Face1375;
+TabVox[3][6] = Face2376;
+TabVox[3][7] = Arete37;
+
+TabVox[4][0] = Arete04;
+TabVox[4][1] = Face0154;
+TabVox[4][2] = Face0264;
+TabVox[4][3] = milieu;
+TabVox[4][4] = Sommet4;
+TabVox[4][5] = Arete45;
+TabVox[4][6] = Arete46;
+TabVox[4][7] = Face4576;
+
+
+TabVox[5][0] = Face0154;
+TabVox[5][1] = Arete15;
+TabVox[5][2] = milieu;
+TabVox[5][3] = Face1375;
+TabVox[5][4] = Arete45;
+TabVox[5][5] = Sommet5;
+TabVox[5][6] = Face4576;
+TabVox[5][7] = Arete57;
+
+TabVox[6][0] = Face0264;
+TabVox[6][1] = milieu;
+TabVox[6][2] = Arete26;
+TabVox[6][3] = Face2376;
+TabVox[6][4] = Arete46;
+TabVox[6][5] = Face4576;
+TabVox[6][6] = Sommet6;
+TabVox[6][7] = Arete67;
+
+TabVox[7][0] = milieu;
+TabVox[7][1] = Face1375;
+TabVox[7][2] = Face2376;
+TabVox[7][3] = Arete37;
+TabVox[7][4] = Face4576;
+TabVox[7][5] = Arete57;
+TabVox[7][6] = Arete67;
+TabVox[7][7] = Sommet7;
+
+TabVox[0][8] = Point(milieu.getX() - rayon/2, milieu.getY() - rayon/2, milieu.getZ() + rayon/2); //0
+TabVox[1][8] = Point(milieu.getX() - rayon/2, milieu.getY() + rayon/2, milieu.getZ() + rayon/2); //1
+TabVox[2][8] = Point(milieu.getX() + rayon/2, milieu.getY() - rayon/2, milieu.getZ() + rayon/2); //2 
+TabVox[3][8] = Point(milieu.getX() + rayon/2, milieu.getY() + rayon/2, milieu.getZ() + rayon/2); //3
+TabVox[4][8] = Point(milieu.getX() - rayon/2, milieu.getY() - rayon/2, milieu.getZ() - rayon/2); //4
+TabVox[5][8] = Point(milieu.getX() - rayon/2, milieu.getY() + rayon/2, milieu.getZ() - rayon/2); //5
+TabVox[6][8] = Point(milieu.getX() + rayon/2, milieu.getY() - rayon/2, milieu.getZ() - rayon/2); //6
+TabVox[7][8] = Point(milieu.getX() + rayon/2, milieu.getY() + rayon/2, milieu.getZ() - rayon/2);
+
+return TabVox;
+
+}
+
+double Distance(Point A, Point B)
+{
+  double Xbis = (A.getX() - B.getX()) * (A.getX() - B.getX());
+  double Ybis = (A.getY() - B.getY()) * (A.getY() - B.getY());
+  double Zbis = (A.getZ() - B.getZ()) * (A.getZ() - B.getZ());
+  double somme = sqrt(Xbis + Ybis + Zbis);
+  return somme;
+}
+
+void CreateSpherebyVoxel(Point centre, double length, double resolution)
+{
+  Point pts[8] = {
+            Point(centre.getX() - length, centre.getY() - length, centre.getZ() + length), //0
+            Point(centre.getX() - length, centre.getY() + length, centre.getZ() + length), //1
+            Point(centre.getX() + length, centre.getY() - length, centre.getZ() + length), //2 
+            Point(centre.getX() + length, centre.getY() + length, centre.getZ() + length), //3
+            Point(centre.getX() - length, centre.getY() - length, centre.getZ() - length), //4
+            Point(centre.getX() - length, centre.getY() + length, centre.getZ() - length), //5
+            Point(centre.getX() + length, centre.getY() - length, centre.getZ() - length), //6
+            Point(centre.getX() + length, centre.getY() + length, centre.getZ() - length) //7
+          };
+  Point** TabVoxel = createVoxel(pts,centre, length);
+  for (int i = 0; i < 8; ++i)
+  {
+    GenerateSphere(TabVoxel[i], centre, length, resolution,length);
+  }
+}
+
+void GenerateSphere(Point* TabVoxel, Point centre, double length, double resolution,  double currentR)
+{
+  int cpt = 0;
+  for (int i = 0; i < 8; ++i)
+  {
+    if (Distance(TabVoxel[i], centre) <= length)
+    {
+      cpt++;
+    }
+  }
+  if (cpt >= 8)
+  {
+    StdDisplayVoxel(TabVoxel);
+  }
+  else if(currentR >= resolution)
+  {
+    if (cpt > 0)
+    {
+      Point** SubVoxel = createVoxel(TabVoxel,TabVoxel[8], currentR/2);
+      for (int i = 0; i < 8; ++i)
+      {
+        GenerateSphere(SubVoxel[i], centre, length, resolution, currentR/2);
+      }
+    }
   }
 }
 
